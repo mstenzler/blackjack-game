@@ -1,0 +1,27 @@
+div {
+ /* border: 1px solid black; */
+}
+
+#board {
+  width: 90%;
+  background: white;
+  margin: 10px auto;
+  padding: 10px;
+}
+
+.player-section {
+  border: 1px solid black;
+  width: 90%;
+  height: 200px;
+  margin: 10px;
+}
+
+.stats {
+  height: 95%
+}
+
+.cards {
+  background: green;
+  width: 95%;
+  height: 95%;
+}
