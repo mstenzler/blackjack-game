@@ -25,3 +25,8 @@ div {
   width: 95%;
   height: 95%;
 }
+.cards img {
+  width: 100px;
+  height: 150px;
+  margin: 10px;
+}
