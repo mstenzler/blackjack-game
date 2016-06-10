@@ -221,17 +221,16 @@ $(document).ready(function() {
   }
 
   var clearBoard = function() {
-    resetHands();
     $('.cards img').remove();
     $(`#${PLAYER_SCORE_ID}`).text('0');
     $(`#${DEALER_SCORE_ID}`).text('0');
   }
 
   var newGame = function() {
+    resetHands();
     clearBoard();
-    $('#hit').on('click', dealPlayerCard);
-    $('#stand').on('click', playDealer);
-    $('#peek').on('click', peekAtHoleCard);
+    removePlayerButtonEvents();
+    setPlayerButtonEvents();
     dealCard(PLAYER_ID);
     dealCard(DEALER_ID, true);
     dealCard(PLAYER_ID);
@@ -282,9 +281,7 @@ $(document).ready(function() {
 
   var endPlayerTurn = function() {
     currentHoleCard.showCard();
-    $('#hit').off('click', dealPlayerCard);
-    $('#stand').off('click', playDealer);
-    $('#peek').off('click', peekAtHoleCard);
+    removePlayerButtonEvents();
   }
 
   var endGame = function() {
@@ -297,6 +294,18 @@ $(document).ready(function() {
 //    currentPlayer = DEALER_ID;
     completeDealerHand();
     endGame();
+  }
+
+  var removePlayerButtonEvents = function() {
+    $('#hit').off('click', dealPlayerCard);
+    $('#stand').off('click', playDealer);
+    $('#peek').off('click', peekAtHoleCard);
+  }
+
+  var setPlayerButtonEvents = function() {
+    $('#hit').on('click', dealPlayerCard);
+    $('#stand').on('click', playDealer);
+    $('#peek').on('click', peekAtHoleCard);
   }
 
   dealerHand = new Hand(DEALER_ID);
