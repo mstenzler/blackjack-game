@@ -1,14 +1,17 @@
 $(document).ready(function() {
   console.log("Ready!")
 
-  var NUM_DECKS_IN_SHOE = 1;
-  var PLAYER_ID = 'player';
-  var DEALER_ID = 'dealer';
-  var PLAYER_SCORE_ID = 'player-score';
-  var DEALER_SCORE_ID = 'dealer-score';
-  var WINNER_RESULT_ID = 'winner-result';
-  var HOLE_CARD_ID = 'hole-card'
-  var CARD_BACK_PIC = "imgs/cards/back.jpg";
+  const NUM_DECKS_IN_SHOE = 1;
+  const PLAYER_ID = 'player';
+  const DEALER_ID = 'dealer';
+  const PLAYER_SCORE_ID = 'player-score';
+  const DEALER_SCORE_ID = 'dealer-score';
+  const WINNER_RESULT_ID = 'winner-result';
+  const HOLE_CARD_ID = 'hole-card'
+  const CARD_BACK_PIC = "imgs/cards/back.jpg";
+  const HIDDEN_SCORE = "??";
+  const HIDE = 1;
+  const SHOW = 2;
 
   var shoe = [];
   var dealerHand;
@@ -56,11 +59,16 @@ $(document).ready(function() {
     this.player = player;
     this.cards = [];
     this.scoreId = (player === DEALER_ID ? DEALER_SCORE_ID : PLAYER_SCORE_ID);
+    this.scoreDisplayState = (player === DEALER_ID ? HIDE : SHOW);
     console.log("cards = ", this.cards);
   }
 
   Hand.prototype.addCard = function(card) {
     this.cards.push(card);
+  }
+
+  Hand.prototype.setDisplayState = function(state) {
+    this.scoreDisplayState = state;
   }
 
   Hand.prototype.hasBlackJack = function() {
@@ -84,9 +92,9 @@ $(document).ready(function() {
     //var doubles = [];
     var numAces = 0;
     var currPoints;
-      //console.log("in Totalpoints. this = ", this);
+      console.log("in Totalpoints. this = ", this);
       //console.log("in Totalpoints. cards = ", cards);
-    //console.log("in Totalpoints. this.cards = ", this.cards);
+    console.log("in Totalpoints. this.cards = ", this.cards);
     for (let i=0; i<this.cards.length; i++) {
       currPoints = this.cards[i].getPoints();
       if (typeof currPoints === 'number') {
@@ -121,7 +129,16 @@ $(document).ready(function() {
 
   Hand.prototype.displayPoints = function() {
     //var points = this.totalPoints()
-    $(`#${this.scoreId}`).html(this.totalPoints());
+    //debugger;
+    var score;
+    if (this.scoreDisplayState === HIDE) {
+      console.log("displayState is hidden!");
+      score = HIDDEN_SCORE;
+    } else {  
+      console.log("displayState is NOT hidden");
+      score = this.totalPoints(); 
+    }
+    $(`#${this.scoreId}`).html(this.scoreDisplayState === HIDE ? HIDDEN_SCORE : this.totalPoints());
   }
 
   //Fisher–Yates shuffle
@@ -224,6 +241,7 @@ $(document).ready(function() {
     $('.cards img').remove();
     $(`#${PLAYER_SCORE_ID}`).text('0');
     $(`#${DEALER_SCORE_ID}`).text('0');
+    $(`#${WINNER_RESULT_ID}`).text('');
   }
 
   var newGame = function() {
@@ -290,6 +308,7 @@ $(document).ready(function() {
 
   var endGame = function() {
     var winner = pickWinner();
+    $(`#${DEALER_SCORE_ID}`).text(dealerHand.totalPoints());
     $(`#${WINNER_RESULT_ID}`).text(winner);
   }
 
@@ -312,12 +331,13 @@ $(document).ready(function() {
     $('#peek').on('click', peekAtHoleCard);
   }
 
-  dealerHand = new Hand(DEALER_ID);
-  playerHand = new Hand(PLAYER_ID);
+  var initGame = function() {
+    resetHands();
+    //console.log("playerHand = ", playerHand);
+    populateShoe(NUM_DECKS_IN_SHOE);
+  }
 
-  console.log("playerHand = ", playerHand);
-
-  populateShoe(NUM_DECKS_IN_SHOE);
+  initGame();
 
   $('#new-game').on('click', newGame);
 
