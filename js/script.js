@@ -6,11 +6,15 @@ $(document).ready(function() {
   var DEALER_ID = 'dealer';
   var PLAYER_SCORE_ID = 'player-score';
   var DEALER_SCORE_ID = 'dealer-score';
+  var WINNER_RESULT_ID = 'winner-result';
+  var HOLE_CARD_ID = 'hole-card'
+  var CARD_BACK_PIC = "imgs/cards/back.jpg";
 
   var shoe = [];
   var dealerHand;
   var playerHand;
-  var current_player = PLAYER_ID;
+//  var currentPlayer = PLAYER_ID;
+  var currentHoleCard;
 
   //var deck = [];
   var cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'ace', 'jack', 'king', 'queen'];
@@ -19,12 +23,24 @@ $(document).ready(function() {
   var Card = function(opts) {
     this.stringValue = opts.stringValue;
     this.suit = opts.suit; 
+    this.facedown = (opts.hasOwnProperty('facedown') ? opts.facedown : false);
+    this.cssId = `${opts.stringValue}${opts.suit}_${randomNumber(9000)}` 
 //    this.getUrl = () => {  `imgs/cards/${this.stringValue}_of_${this.suit}.png` }
   }
 
-  Card.prototype.getUrl = function() {
-    return `imgs/cards/${this.stringValue}_of_${this.suit}.png`;
+  Card.prototype.getUrl = function(forceFaceUp) {
+    return ((!this.facedown || forceFaceUp) ? `imgs/cards/${this.stringValue}_of_${this.suit}.png` : CARD_BACK_PIC);
   }
+
+  Card.prototype.showCard = function() {
+    $(`#${this.cssId}`).src = this.getUrl(true);
+  }
+
+/*
+  Card.prototype.hideCard = function() {
+    $(`#${this.css_id}`).src = CARD_BACK_GIF;
+  }
+*/
 
   Card.prototype.getPoints = function() {
     if (['jack', 'king', 'queen'].includes(this.stringValue)) {
@@ -39,7 +55,7 @@ $(document).ready(function() {
   var Hand = function(player) {
     this.player = player;
     this.cards = [];
-    this.score_id = (player === DEALER_ID ? DEALER_SCORE_ID : PLAYER_SCORE_ID);
+    this.scoreId = (player === DEALER_ID ? DEALER_SCORE_ID : PLAYER_SCORE_ID);
     console.log("cards = ", this.cards);
   }
 
@@ -47,14 +63,30 @@ $(document).ready(function() {
     this.cards.push(card);
   }
 
+  Hand.prototype.hasBlackJack = function() {
+    var ace;
+    var tenCard;
+    if (this.cards.length == 2) {
+      this.cards.forEach(function(card) {
+        var currVal = card.getPoints();
+        if (currVal === 'ace') {
+          ace = 1;
+        } else if (currVal === 10) {
+          tenCard = 1;
+        }
+      });
+    }
+    return (ace && tenCard);
+  }
+
   Hand.prototype.totalPoints = function() {
     var totalPoints = 0;
     //var doubles = [];
     var numAces = 0;
     var currPoints;
-      console.log("in Totalpoints. this = ", this);
+      //console.log("in Totalpoints. this = ", this);
       //console.log("in Totalpoints. cards = ", cards);
-    console.log("in Totalpoints. this.cards = ", this.cards);
+    //console.log("in Totalpoints. this.cards = ", this.cards);
     for (let i=0; i<this.cards.length; i++) {
       currPoints = this.cards[i].getPoints();
       if (typeof currPoints === 'number') {
@@ -78,14 +110,18 @@ $(document).ready(function() {
     } else if (numAces > 1) {
       var highNum = totalPoints + 11 + numAces -1; //one ace is 11 all others are 1
       var lowNum = totalPoints + numAces; //all aces are 1
-      totalPoints += (highNum <= 21 ? highNum : lowNum);
+      totalPoints = (highNum <= 21 ? highNum : lowNum);
     }
     return totalPoints;
   }
 
+  Hand.prototype.busted = function() {
+    return (this.totalPoints() > 21);
+  }
+
   Hand.prototype.displayPoints = function() {
     //var points = this.totalPoints()
-    $(`#${this.score_id}`).html(this.totalPoints());
+    $(`#${this.scoreId}`).html(this.totalPoints());
   }
 
   //Fisher–Yates shuffle
@@ -97,6 +133,10 @@ $(document).ready(function() {
       arr[j] = tmp;
     }
   } 
+
+  var randomNumber = function(length) {
+    return Math.floor(Math.random()*length);
+  }
 
   var buildCardDeck = function() {
     var cardDeck = [];
@@ -130,13 +170,20 @@ $(document).ready(function() {
     return card;
   }
 */
-  var dealCard = function(player) {
+  var dealCard = function(player, isHoleCard) {
     if (!shoe.length) {
       populateShoe(NUM_DECKS_IN_SHOE);
     }
     var card = shoe.pop();
+    if (isHoleCard !== undefined) {
+      card.facedown = isHoleCard;
+    }
     var $cardImage = $('<img>').attr('src', card.getUrl());
-    console.log("imge = ", $cardImage);
+    $cardImage.attr('id', card.cssId);
+    if (isHoleCard) {
+      currentHoleCard = card;
+    }
+    //console.log("imge = ", $cardImage);
     $(`#${player} .cards`).append($cardImage);
 
     if (player === PLAYER_ID) {
@@ -148,12 +195,108 @@ $(document).ready(function() {
     }
   }
 
-  var startHand = function() {
+  var dealPlayerCard = function() {
+    dealCard(PLAYER_ID);
+    if (playerHand.busted()) {
+      endPlayerTurn();
+      endGame();
+    }
+  }
+
+  var hideHoleCard = function() {
+    console.log("in hideHoleCard. cssId =", currentHoleCard.cssId);
+    $(`#${currentHoleCard.cssId}`).attr('src', CARD_BACK_PIC);
+  }
+
+  var peekAtHoleCard = function() {
+    var cardUrl= currentHoleCard.getUrl(true);
+    var cardCssId = currentHoleCard.cssId;
+    var $img = $(`#${currentHoleCard.cssId}`).attr('src', cardUrl);
+    setTimeout(hideHoleCard, 2000);
+  }
+
+  var resetHands = function() {
+    dealerHand = new Hand(DEALER_ID);
+    playerHand = new Hand(PLAYER_ID);
+  }
+
+  var clearBoard = function() {
+    resetHands();
+    $('.cards img').remove();
+    $(`#${PLAYER_SCORE_ID}`).text('0');
+    $(`#${DEALER_SCORE_ID}`).text('0');
+  }
+
+  var newGame = function() {
+    clearBoard();
+    $('#hit').on('click', dealPlayerCard);
+    $('#stand').on('click', playDealer);
+    $('#peek').on('click', peekAtHoleCard);
+    dealCard(PLAYER_ID);
+    dealCard(DEALER_ID, true);
     dealCard(PLAYER_ID);
     dealCard(DEALER_ID);
-    dealCard(PLAYER_ID);
-    dealCard(DEALER_ID);
-    currPlayer = PLAYER_ID;
+
+    if (dealerHand.hasBlackJack()) {
+      endPlayerTurn();
+      endGame();
+    }
+    //check for blackjack!!
+//    currentPlayer = PLAYER_ID;
+  }
+
+  var completeDealerHand = function() {
+    var dealerScore = dealerHand.totalPoints();
+    while (dealerScore < 17) {
+      dealCard(DEALER_ID);
+      dealerScore = dealerHand.totalPoints();
+    }
+  }
+
+  var pickWinner = function() {
+    if (dealerHand.busted()) {
+      return PLAYER_ID;
+    }
+
+    var dealerHasBlackJack = dealerHand.hasBlackJack();
+    var playerHasBlackJack = playerHand.hasBlackJack();
+    var winner;
+
+    if (dealerHasBlackJack || playerHasBlackJack)  {
+      if (dealerHasBlackJack && !playerHasBlackJack) {
+        winner = DEALER_ID;
+      } else if (!dealerHasBlackJack && playerHasBlackJack) {
+        winner = PLAYER_ID;
+      }
+    }
+
+    if (!winner) {
+      var dealerScore = dealerHand.totalPoints();
+      var playerScore = playerHand.totalPoints();
+
+      winner = ( (dealerScore >= playerScore) ? DEALER_ID : PLAYER_ID );
+    }
+
+    return winner;
+  }
+
+  var endPlayerTurn = function() {
+    currentHoleCard.showCard();
+    $('#hit').off('click', dealPlayerCard);
+    $('#stand').off('click', playDealer);
+    $('#peek').off('click', peekAtHoleCard);
+  }
+
+  var endGame = function() {
+    var winner = pickWinner();
+    $(`#${WINNER_RESULT_ID}`).text(winner);
+  }
+
+  var playDealer = function() {
+    endPlayerTurn();
+//    currentPlayer = DEALER_ID;
+    completeDealerHand();
+    endGame();
   }
 
   dealerHand = new Hand(DEALER_ID);
@@ -163,18 +306,12 @@ $(document).ready(function() {
 
   populateShoe(NUM_DECKS_IN_SHOE);
 
-  $('#hit').on('click', function(event) {
-    //var currPlayer = 'player';
-    dealCard(PLAYER_ID);
-  });
-
-  $('#new-game').on('click', startHand);
+  $('#new-game').on('click', newGame);
 
  //shoe = buildCardDeck();
 // card1 = deck[0];
 // console.log("url = ", card1.getUrl());
 // console.log("deckUrl = ", deck);
  //deck.forEach((card) => { console.log(card)});
-
 
 })
