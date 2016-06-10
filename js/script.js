@@ -33,7 +33,7 @@ $(document).ready(function() {
   }
 
   Card.prototype.showCard = function() {
-    $(`#${this.cssId}`).src = this.getUrl(true);
+    $(`#${this.cssId}`).attr('src', this.getUrl(true));
   }
 
 /*
@@ -253,9 +253,14 @@ $(document).ready(function() {
   }
 
   var pickWinner = function() {
-    if (dealerHand.busted()) {
-      return PLAYER_ID;
+    var dealerScore = dealerHand.totalPoints();
+    var playerScore = playerHand.totalPoints();
+    if (playerScore > 21) {
+      return DEALER_ID;
     }
+    if (dealerScore > 21) {
+      return PLAYER_ID;
+    } 
 
     var dealerHasBlackJack = dealerHand.hasBlackJack();
     var playerHasBlackJack = playerHand.hasBlackJack();
@@ -270,8 +275,6 @@ $(document).ready(function() {
     }
 
     if (!winner) {
-      var dealerScore = dealerHand.totalPoints();
-      var playerScore = playerHand.totalPoints();
 
       winner = ( (dealerScore >= playerScore) ? DEALER_ID : PLAYER_ID );
     }
@@ -280,6 +283,7 @@ $(document).ready(function() {
   }
 
   var endPlayerTurn = function() {
+    console.log("END PLAYER TURN")
     currentHoleCard.showCard();
     removePlayerButtonEvents();
   }
