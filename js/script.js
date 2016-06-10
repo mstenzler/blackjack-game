@@ -10,6 +10,9 @@ $(document).ready(function() {
   const HOLE_CARD_ID = 'hole-card'
   const CARD_BACK_PIC = "imgs/cards/back.jpg";
   const HIDDEN_SCORE = "??";
+  const WINNER_PIC_ID = 'winner-pic';
+  const LOSER_PIC_ID = 'loser-pic';
+  const ANIMATION_END = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend'
   const HIDE = 1;
   const SHOW = 2;
 
@@ -22,6 +25,23 @@ $(document).ready(function() {
   //var deck = [];
   var cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'ace', 'jack', 'king', 'queen'];
   var cardSuits = ['clubs', 'diamonds', 'hearts', 'spades'];
+
+  //function taken directly from animate.css documentation
+  $.fn.extend({
+      animateCss: function (animationName) {
+          //var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+          $(this).addClass('animated ' + animationName).one(ANIMATION_END, function() {
+              $(this).removeClass('animated ' + animationName);
+          });
+      },
+      animateAndReomveCss: function (animationName, imageId) {
+          //var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+          $(this).addClass('animated ' + animationName).one(ANIMATION_END, function() {
+              $(this).removeClass('animated ' + animationName);
+              $(this).hide();
+          });
+      }
+  });
 
   var Card = function(opts) {
     this.stringValue = opts.stringValue;
@@ -195,8 +215,8 @@ $(document).ready(function() {
     if (isHoleCard !== undefined) {
       card.facedown = isHoleCard;
     }
-    var $cardImage = $('<img>').attr('src', card.getUrl());
-    $cardImage.attr('id', card.cssId);
+    var $cardImage = $('<img>').attr('src', card.getUrl()).attr('id', card.cssId).addClass('animated rollIn');
+   // $cardImage.attr('id', card.cssId);
     if (isHoleCard) {
       currentHoleCard = card;
     }
@@ -222,13 +242,13 @@ $(document).ready(function() {
 
   var hideHoleCard = function() {
     console.log("in hideHoleCard. cssId =", currentHoleCard.cssId);
-    $(`#${currentHoleCard.cssId}`).attr('src', CARD_BACK_PIC);
+    $(`#${currentHoleCard.cssId}`).attr('src', CARD_BACK_PIC).addClass('animated flipInY');
   }
 
   var peekAtHoleCard = function() {
     var cardUrl= currentHoleCard.getUrl(true);
     var cardCssId = currentHoleCard.cssId;
-    var $img = $(`#${currentHoleCard.cssId}`).attr('src', cardUrl);
+    var $img = $(`#${currentHoleCard.cssId}`).attr('src', cardUrl).addClass('animated flipInY');
     setTimeout(hideHoleCard, 2000);
   }
 
@@ -242,6 +262,8 @@ $(document).ready(function() {
     $(`#${PLAYER_SCORE_ID}`).text('0');
     $(`#${DEALER_SCORE_ID}`).text('0');
     $(`#${WINNER_RESULT_ID}`).text('');
+    $(`#${WINNER_PIC_ID}`).hide();
+    $(`#${LOSER_PIC_ID}`).hide();
   }
 
   var newGame = function() {
@@ -306,10 +328,39 @@ $(document).ready(function() {
     removePlayerButtonEvents();
   }
 
+  var removeDealerWins = function() {
+    $(`#${LOSER_PIC_ID}`).animateAndReomveCss('bounceOut');
+  //  $(`#${LOSER_PIC_ID}`).hide();
+  }
+
+  var removePlayerWins = function() {
+    $(`#${WINNER_PIC_ID}`).animateAndReomveCss('bounceOut');
+   // $(`#${WINNER_PIC_ID}`).hide();
+  }
+
+  var displayDealerWins = function() {
+    $(`#${WINNER_RESULT_ID}`).text("Dealer wins!");
+    $(`#${LOSER_PIC_ID}`).show().animateCss('zoomIn');
+    window.setTimeout(removeDealerWins, 3000);
+  }
+
+  var displayPlayerWins = function() {
+    $(`#${WINNER_RESULT_ID}`).text("Player wins!");
+    $(`#${WINNER_PIC_ID}`).show().animateCss('zoomIn');
+    window.setTimeout(removePlayerWins, 3000);
+
+  }
+
   var endGame = function() {
     var winner = pickWinner();
     $(`#${DEALER_SCORE_ID}`).text(dealerHand.totalPoints());
     $(`#${WINNER_RESULT_ID}`).text(winner);
+    if (winner === DEALER_ID) {
+      displayDealerWins();
+    }
+    else {
+      displayPlayerWins();
+    }
   }
 
   var playDealer = function() {

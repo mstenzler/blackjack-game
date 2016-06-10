@@ -9,6 +9,23 @@ div {
   padding: 10px;
 }
 
+#winner-pic {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -150px -200px;
+}
+
+#loser-pic {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -137px -250px;
+}
+
+
 .player-section {
   border: 1px solid black;
   width: 90%;
