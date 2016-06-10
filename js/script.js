@@ -1,6 +1,12 @@
 $(document).ready(function() {
   console.log("Ready!")
 
+  //To Do
+  //Check if user is has 21 after dealing a hand
+  //put delay so that so that user can see the dealer's hand before winner or loser disaplays
+  //betting
+  //keep track of number of player/dealer wins
+
   const NUM_DECKS_IN_SHOE = 1;
   const PLAYER_ID = 'player';
   const DEALER_ID = 'dealer';
@@ -15,6 +21,7 @@ $(document).ready(function() {
   const ANIMATION_END = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend'
   const HIDE = 1;
   const SHOW = 2;
+  END_ANIMATION_TIME = 2000;
 
   var shoe = [];
   var dealerHand;
@@ -34,7 +41,7 @@ $(document).ready(function() {
               $(this).removeClass('animated ' + animationName);
           });
       },
-      animateAndReomveCss: function (animationName, imageId) {
+      animateAndRemoveCss: function (animationName, imageId) {
           //var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
           $(this).addClass('animated ' + animationName).one(ANIMATION_END, function() {
               $(this).removeClass('animated ' + animationName);
@@ -329,25 +336,25 @@ $(document).ready(function() {
   }
 
   var removeDealerWins = function() {
-    $(`#${LOSER_PIC_ID}`).animateAndReomveCss('bounceOut');
+    $(`#${LOSER_PIC_ID}`).animateAndRemoveCss('bounceOut');
   //  $(`#${LOSER_PIC_ID}`).hide();
   }
 
   var removePlayerWins = function() {
-    $(`#${WINNER_PIC_ID}`).animateAndReomveCss('bounceOut');
+    $(`#${WINNER_PIC_ID}`).animateAndRemoveCss('bounceOut');
    // $(`#${WINNER_PIC_ID}`).hide();
   }
 
   var displayDealerWins = function() {
     $(`#${WINNER_RESULT_ID}`).text("Dealer wins!");
     $(`#${LOSER_PIC_ID}`).show().animateCss('zoomIn');
-    window.setTimeout(removeDealerWins, 3000);
+    window.setTimeout(removeDealerWins, END_ANIMATION_TIME);
   }
 
   var displayPlayerWins = function() {
     $(`#${WINNER_RESULT_ID}`).text("Player wins!");
     $(`#${WINNER_PIC_ID}`).show().animateCss('zoomIn');
-    window.setTimeout(removePlayerWins, 3000);
+    window.setTimeout(removePlayerWins, END_ANIMATION_TIME);
 
   }
 
