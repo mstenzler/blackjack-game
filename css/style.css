@@ -1,10 +1,28 @@
-div {
+@font-face { 
+  font-family: Casino; 
+  src: url('../fonts/blackjack.rollin.ttf'); 
+} 
+
+body {
+  font-family: Casino;
  /* border: 1px solid black; */
+}
+
+html { 
+  background: url('../imgs/casino-background.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#intro {
+  text-align: center;
 }
 
 #board {
   width: 90%;
-  background: white;
+  background: Green;
   margin: 10px auto;
   padding: 10px;
 }
@@ -27,18 +45,21 @@ div {
 
 
 .player-section {
+  background-image: url('../imgs/poker-background.jpg');
+  background-size: cover;
   border: 1px solid black;
-  width: 90%;
   height: 200px;
   margin: 10px;
 }
 
 .stats {
-  height: 95%
+  height: 95%;
+  margin: 20px;
+  background: white;
+  width: 100%;
 }
 
 .cards {
-  background: green;
   width: 95%;
   height: 95%;
 }
