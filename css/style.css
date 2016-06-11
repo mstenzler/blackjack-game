@@ -48,13 +48,14 @@ html {
   background-image: url('../imgs/poker-background.jpg');
   background-size: cover;
   border: 1px solid black;
-  height: 200px;
+  height: 220px;
   margin: 10px;
 }
 
 .stats {
   height: 95%;
   margin: 20px;
+  padding: 5px;
   background: white;
   width: 100%;
 }
