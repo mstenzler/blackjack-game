@@ -1,5 +1,6 @@
 # blackjack-game
-Blackjack game in Javascript
+Blackjack game in Javascript. Play it at:
+http://mstenzler.github.io/blackjack-game/
 
 # User Stories
 
