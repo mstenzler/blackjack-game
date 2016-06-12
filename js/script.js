@@ -15,7 +15,7 @@ $(document).ready(function() {
   const WINNER_RESULT_ID = 'winner-result';
   const HOLE_CARD_ID = 'hole-card'
   const CARD_BACK_PIC = "imgs/cards/back.jpg";
-  const HIDDEN_SCORE = "??";
+  const HIDDEN_SCORE = "?";
   const WINNER_PIC_ID = 'winner-pic';
   const LOSER_PIC_ID = 'loser-pic';
   const STAND_BUTTON_ID = "stand";
@@ -373,10 +373,11 @@ $(document).ready(function() {
     $numDealerWins.html(numDealerWins);
   }
 
-  var displayPlayerStats = function() {
+  var displayStats = function() {
     console.log("player Cash = ", playerCash);
     $playerCash.html(playerCash);
     $playerNumWins.html(playerNumWins);
+    $dealerNumWins.html(dealerNumWins);
   }
 
   var endGame = function() {
@@ -395,7 +396,7 @@ $(document).ready(function() {
       playerCash += currentBet;
       displayPlayerWins();
     }
-    displayPlayerStats();
+    displayStats();
   }
 
   var playDealer = function() {
