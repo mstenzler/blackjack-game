@@ -35,10 +35,6 @@ html {
   padding: 6px 5px 0px 5px;
 }
 
-#new-hand {
-  color: white;
-  background: #CD5C5C;
-}
 
 #player-stats {
   border-top: 1px solid black;
@@ -72,6 +68,11 @@ html {
   margin: -137px -250px;
 }
 
+.play-hand {
+  color: white;
+  background: #CD5C5C;
+}
+
 img#peek {
   margin: 0;
   display: none;
@@ -91,6 +92,11 @@ p.stat-item {
 }
 .centered {
  text-align: center;
+}
+
+.disabled {
+  color: white;
+  background-color: grey;
 }
 
 .button-control {

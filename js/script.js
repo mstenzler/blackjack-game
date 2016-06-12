@@ -203,6 +203,7 @@ $(document).ready(function() {
     var score;
     if (this.scoreDisplayState === HIDE) {
       score = HIDDEN_SCORE;
+      console.log("SHOWING PEEK BUTTON for player: ", this.player);
       $peekButton.show();
     } else {  
       score = this.totalPoints(); 
@@ -400,6 +401,7 @@ $(document).ready(function() {
       displayPlayerWins();
     }
     displayStats();
+    enableNewHandButton();
   }
 
   var playDealer = function() {
@@ -427,6 +429,24 @@ $(document).ready(function() {
     removePlayerButtonEvents();
     setPlayerButtonEvents();
   }
+
+  var disableNewHandButton = function() {
+    console.log("DISABLING NewHandButton!!");
+    $newHandButton.off('click', newHand);
+    $newHandButton.removeClass('play-hand').addClass('disabled');
+  }
+
+  var enableNewHandButton = function() {
+    console.log("ENABLING NewHandButton!!")
+    $newHandButton.on('click', newHand);
+    $newHandButton.removeClass('disabled').addClass('play-hand');
+  }
+
+  var resetNewHandButton = function() {
+    disableNewHandButton();
+    enableNewHandButton();
+  }
+
 
   var resetHands = function() {
     dealerHand = new Hand(DEALER_ID);
@@ -496,6 +516,7 @@ $(document).ready(function() {
 
     if (betStatus === true) {
       console.log("Dealing hands");
+      disableNewHandButton();
       currentBet = betInt;
       resetHands();
       clearBoard();
@@ -520,9 +541,12 @@ $(document).ready(function() {
   }
 
   var startFirstHand = function() {
+    console.log("IN startFirstHand!!")
     $newHandButton.html("New Hand");
-    $newHandButton.off('click', newHand);
-    $newHandButton.on('click', newHand);
+//    $newHandButton.off('click', newHand);
+//    $newHandButton.on('click', newHand);
+    $newHandButton.off('click', startFirstHand);
+    resetNewHandButton();
     newHand();
   }
 
