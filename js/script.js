@@ -581,12 +581,6 @@ $(document).ready(function() {
     $errorButton.hide();
   }
 
-  // var initGame = function() {
-  //   resetHands();
-  //   //console.log("playerHand = ", playerHand);
-  //   populateShoe(NUM_DECKS_IN_SHOE);
-  // }
-
   newGame();
 
   $helpButton.on('click', showHelp);
@@ -595,10 +589,5 @@ $(document).ready(function() {
 
   $(`#${NEW_GAME_BUTTON_ID}`).on('click', newGame);
 
- //shoe = buildCardDeck();
-// card1 = deck[0];
-// console.log("url = ", card1.getUrl());
-// console.log("deckUrl = ", deck);
- //deck.forEach((card) => { console.log(card)});
 
 })

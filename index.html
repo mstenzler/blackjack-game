@@ -6,7 +6,9 @@
   <title>Black Jack!</title>
   <script type='text/javascript' src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
   <script src="js/script.js" type="text/javascript"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css"> -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="http://s.mlcdn.co/animate.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -34,6 +36,32 @@
       </div>
 
       <div class="ten columns cards">
+       <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+        <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+         <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+          <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+<!--
+        <div class="container">
+          <div class="row">
+          <div class="three columns">
+            <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+          </div>
+          <div class="three columns">
+            <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+          </div>
+          <div class="three columns">
+            <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+          </div>
+          <div class="three columns">
+            <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+          </div>
+                    <div class="three columns">
+            <img src="imgs/cards/10_of_diamonds.png" alt=""/>
+          </div>
+ 
+          </div>
+        </div>
+        -->
         
       </div>
 
@@ -61,10 +89,10 @@
   <!--  <div class="two columns">&nbsp;</div> -->
     <div class="twelve columns u-full-width">
       <div id="controls">
-        <button id="stand" class="button-control">Stand</button> <button id="hit" class="button-control">Hit</button> 
-        Current Bet: <input type=text size="3" id="current-bet"></input> 
-        <button id="new-hand" class="play-hand">Play</button> <button id="help-button" class="button-control">Help</button>
-        <button id="new-game" class="button-control">Reset Game</button> 
+          <button id="stand" class="button-control">Stand</button> <button id="hit" class="button-control">Hit</button> 
+          <span class="control-label">Bet:</span><input type=text size="3" id="current-bet"></input> 
+          <button id="new-hand" class="play-hand">Play</button> <button id="help-button" class="button-control">Help</button>
+          <button id="new-game" class="button-control">Reset Game</button> 
       </div>
 
     </div>

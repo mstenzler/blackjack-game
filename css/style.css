@@ -28,11 +28,12 @@ html {
 }
 
 #controls {
-  width: 90%;
+  width: 100%;
   background: white;
   margin: 0 auto;
   border-radius: 5px;
   padding: 6px 5px 0px 5px;
+  text-align: center;
 }
 
 
@@ -68,24 +69,12 @@ html {
   margin: -137px -250px;
 }
 
-.play-hand {
-  color: white;
-  background: #CD5C5C;
-}
 
 img#peek {
   margin: 0;
   display: none;
 }
-/*
-div#bet-and-play {
-  position: inline-block;
-}
 
-p#instructions, p#error {
-  margin: 0;
-}
-*/
 
 p.stat-item {
   margin-bottom: 0.5em;
@@ -99,10 +88,21 @@ p.stat-item {
   background-color: grey;
 }
 
+.play-hand {
+  color: white;
+  background: #CD5C5C;
+  padding: 0 1em;
+}
+
 .button-control {
   color: white;
   background-color: green;
   border-color: green;
+  padding: 0 1px;
+}
+
+#controls button.button-control, button.play { 
+  padding: 0 1em;
 }
 
 .button-control:hover {
@@ -119,16 +119,18 @@ p.player-label, p.cash {
   background-image: url('../imgs/poker-background.jpg');
   background-size: cover;
   border: 1px solid black;
-  height: 220px;
+ /* height: 220px; */
   margin: 10px;
 }
 
 .stats {
+  background: white;
+  /*
   height: 95%;
   margin: 20px;
   padding: 5px;
-  background: white;
   width: 100%;
+  */
 }
 
 .cards {
@@ -136,7 +138,55 @@ p.player-label, p.cash {
   height: 95%;
 }
 .cards img {
-  width: 100px;
-  height: 150px;
-  margin: 10px;
+  /* width: 100%; */ 
+  max-width: 30px; 
+/*  height: 150px;  */
+  margin: 5px;
 }
+
+/* Media queries */
+/* Larger than mobile */
+  @media (min-width: 400px) {
+    .cards img {
+      max-width: 60px; 
+      margin: 5px;
+    }
+  }
+
+/* Larger than phablet */
+  @media (min-width: 550px) {
+    #controls {
+      width: 90%;
+    }
+
+    .cards img {
+      max-width: 75px; 
+      margin: 10px;
+    }
+
+  .stats {
+    height: 95%;
+    margin: 10px;
+    padding: 5px;
+    width: 100%;
+  }
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+  #controls button.button-control, button.play { 
+    padding: 0 2em;
+  }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+    .cards img {
+      max-width: 103px; 
+      margin: 10px;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {}
+
