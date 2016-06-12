@@ -165,7 +165,7 @@ $(document).ready(function() {
       //console.log("in Totalpoints. this = ", this);
       //console.log("in Totalpoints. cards = ", cards);
     //console.log("in Totalpoints. this.cards = ", this.cards);
-    for (let i=0; i<this.cards.length; i++) {
+    for (var i=0; i<this.cards.length; i++) {
       currPoints = this.cards[i].getPoints();
       if (typeof currPoints === 'number') {
         totalPoints += currPoints;
@@ -227,8 +227,8 @@ $(document).ready(function() {
 
   var buildCardDeck = function() {
     var cardDeck = [];
-    for (let i=0; i<cardValues.length; i++) {
-      for (let j=0; j<cardSuits.length; j++) {
+    for (var i=0; i<cardValues.length; i++) {
+      for (var j=0; j<cardSuits.length; j++) {
         //console.log("Building card deck", cardValues[i], cardSuits[j]);
         cardDeck.push(new Card({ stringValue: cardValues[i], suit: cardSuits[j] }));
       }
@@ -239,7 +239,7 @@ $(document).ready(function() {
   var populateShoe = function(numDecks) {
     var deck;
     shoe = [];
-    for (let i=numDecks; i>0; i--) {
+    for (var i=numDecks; i>0; i--) {
       deck = buildCardDeck();
       shoe = shoe.concat(deck); 
     }
