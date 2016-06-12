@@ -27,6 +27,35 @@ html {
   padding: 10px;
 }
 
+#controls {
+  width: 90%;
+  background: white;
+  margin: 0 auto;
+  border-radius: 5px;
+  padding: 6px 5px 0px 5px;
+}
+
+#new-hand {
+  color: white;
+  background: #CD5C5C;
+}
+
+#player-stats {
+  border-top: 1px solid black;
+}
+
+#help-text, #error-div {
+  background: white;
+  width: 600px;
+  height: 100px;
+  text-align: center;
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -50px -300px;
+}
+
 #winner-pic {
   display: none;
   position: absolute;
@@ -43,6 +72,38 @@ html {
   margin: -137px -250px;
 }
 
+/*
+div#bet-and-play {
+  position: inline-block;
+}
+
+p#instructions, p#error {
+  margin: 0;
+}
+*/
+
+p.stat-item {
+  margin-bottom: 0.5em;
+}
+.centered {
+ text-align: center;
+}
+
+.button-control {
+  color: white;
+  background-color: green;
+  border-color: green;
+}
+
+.button-control:hover {
+  color: black;
+  border-color: black;
+}
+
+p.player-label, p.cash {
+  border-bottom: 1px solid black;
+  margin-bottom: 0.25em;
+}
 
 .player-section {
   background-image: url('../imgs/poker-background.jpg');

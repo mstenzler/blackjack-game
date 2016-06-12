@@ -25,7 +25,7 @@
       
       <div class="two columns">
         <div class="stats">
-          <p>Dealer</p>
+          <p class="centered player-label">Dealer</p>
           <p>Score: <span id="dealer-score"></span></p>
           <p><button id="peek">Peek</button></p>
         </div>
@@ -36,17 +36,17 @@
       </div>
 
     </div>
-<!--
-    <div class="row result">
-      <img src="imgs/winner.jpg" class="animated zoomIn"/>
-    </div>
-  -->
+
     <div id="player" class="row player-section">
 
       <div class="two columns">
         <div class="stats">
-          <p>Player</p>
+          <p class="centered player-label">Player</p>
           <p>Score: <span id="player-score"></span></p> 
+          <div id="player-stats">
+          <p class="stat-item">Cash: <span id="player-cash"></span></p>
+          <p class="stat-item">Wins: <span id="player-num-wins"></span></p>
+          </div>
         </div>
       </div>
 
@@ -56,9 +56,14 @@
     </div>
 
     <div class="row">
-    <div class="two columns">&nbsp;</div>
-    <div class="ten columns" id="controls">
-      <button id="stand" class="button-primary">Stand</button> <button id="hit" class="button-primary">Hit</button> <button id="new-game" class="button-primary">New Game</button> <span id="winner">Winner: <span id="winner-result"></span></span>
+  <!--  <div class="two columns">&nbsp;</div> -->
+    <div class="twelve columns u-full-width">
+      <div id="controls">
+        <button id="stand" class="button-control">Stand</button> <button id="hit" class="button-control">Hit</button> 
+        Current Bet: <input type=text size="3" id="current-bet"></input> 
+        <button id="new-hand">Play</button> <button id="help-button" class="button-control">Help</button>
+        <button id="new-game" class="button-control">Reset Game</button> 
+      </div>
 
     </div>
 
@@ -67,6 +72,16 @@
 
 <img src="imgs/winner.png" id="winner-pic"/>
 <img src="imgs/loser.png" id="loser-pic"/>
+
+<div id="help-text">
+  <p>Place a bet in the 'current bet' input area and press play</p>
+  <button id="close-help">Close</button>
+</div>
+
+<div id="error-div">
+ <p id="error-text">&nbsp;</p>
+ <button id="close-error">Close</button>
+</div>
   
 
 </body>

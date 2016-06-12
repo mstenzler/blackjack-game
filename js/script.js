@@ -18,18 +18,61 @@ $(document).ready(function() {
   const HIDDEN_SCORE = "??";
   const WINNER_PIC_ID = 'winner-pic';
   const LOSER_PIC_ID = 'loser-pic';
+  const STAND_BUTTON_ID = "stand";
+  const HIT_BUTTON_ID = "hit";
+  const PEEK_BUTTON_ID = "peek";
+  const NEW_HAND_BUTTON_ID = "new-hand";
+  const NEW_GAME_BUTTON_ID = "new-game";
+  const CURRENT_BET_ID = "current-bet";
+  const PLAYER_NUM_WINS_ID = "player-num-wins";
+  const DEALER_NUM_WINS_ID = "dealer-num-wins";
+  const PLAYER_CASH_ID     = "player-cash";
+  const HELP_BUTTON_ID     = "help-button";
+  const HELP_TEXT_ID       = "help-text";
+  const CLOSE_HELP_ID      = "close-help";
+  const ERROR_DIV_ID       = "error-div";
+  const ERROR_TEXT_ID      = "error-text";
+  const CLOSE_ERROR_ID     = "close-error";
+
   const ANIMATION_END = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend'
   const HIDE = 1;
   const SHOW = 2;
-  END_ANIMATION_TIME = 2000;
+  const END_ANIMATION_TIME = 2000;
+  const MAX_BET = 20;
+  const DEFAULT_BET = 10;
+  const STARTING_CASH = 100;
+
+  //JQuery objects
+  var $hitButton =  $(`#${HIT_BUTTON_ID}`);
+  var $standButton = $(`#${STAND_BUTTON_ID}`);
+  var $peekButton = $(`#${PEEK_BUTTON_ID}`);
+  var $newHandButton = $(`#${NEW_HAND_BUTTON_ID}`);
+ 
+  var $playerScore = $(`#${PLAYER_SCORE_ID}`);
+  var $dealerScore = $(`#${DEALER_SCORE_ID}`);
+  var $playerNumWins = $(`#${PLAYER_NUM_WINS_ID}`);
+  var $dealerNumWins = $(`#${DEALER_NUM_WINS_ID}`);
+  var $playerCash = $(`#${PLAYER_CASH_ID}`);
+  var $winnerResult = $(`#${WINNER_RESULT_ID}`);
+  var $winnerPic = $(`#${WINNER_PIC_ID}`);
+  var $loserPic = $(`#${LOSER_PIC_ID}`);
+  var $currentBet = $(`#${CURRENT_BET_ID}`);
+  var $helpButton = $(`#${HELP_BUTTON_ID}`);
+  var $helpText = $(`#${HELP_TEXT_ID}`);
+  var $closeHelp = $(`#${CLOSE_HELP_ID}`);
+  var $errorDiv = $(`#${ERROR_DIV_ID}`);
+  var $errorText = $(`#${ERROR_TEXT_ID}`);
+  var $closeError = $(`#${CLOSE_ERROR_ID}`);
 
   var shoe = [];
   var dealerHand;
   var playerHand;
-//  var currentPlayer = PLAYER_ID;
   var currentHoleCard;
+  var playerCash = STARTING_CASH;
+  var dealerNumWins = 0;
+  var playerNumWins = 0;
+  var currentBet;
 
-  //var deck = [];
   var cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'ace', 'jack', 'king', 'queen'];
   var cardSuits = ['clubs', 'diamonds', 'hearts', 'spades'];
 
@@ -119,9 +162,9 @@ $(document).ready(function() {
     //var doubles = [];
     var numAces = 0;
     var currPoints;
-      console.log("in Totalpoints. this = ", this);
+      //console.log("in Totalpoints. this = ", this);
       //console.log("in Totalpoints. cards = ", cards);
-    console.log("in Totalpoints. this.cards = ", this.cards);
+    //console.log("in Totalpoints. this.cards = ", this.cards);
     for (let i=0; i<this.cards.length; i++) {
       currPoints = this.cards[i].getPoints();
       if (typeof currPoints === 'number') {
@@ -159,10 +202,8 @@ $(document).ready(function() {
     //debugger;
     var score;
     if (this.scoreDisplayState === HIDE) {
-      console.log("displayState is hidden!");
       score = HIDDEN_SCORE;
     } else {  
-      console.log("displayState is NOT hidden");
       score = this.totalPoints(); 
     }
     $(`#${this.scoreId}`).html(this.scoreDisplayState === HIDE ? HIDDEN_SCORE : this.totalPoints());
@@ -259,38 +300,6 @@ $(document).ready(function() {
     setTimeout(hideHoleCard, 2000);
   }
 
-  var resetHands = function() {
-    dealerHand = new Hand(DEALER_ID);
-    playerHand = new Hand(PLAYER_ID);
-  }
-
-  var clearBoard = function() {
-    $('.cards img').remove();
-    $(`#${PLAYER_SCORE_ID}`).text('0');
-    $(`#${DEALER_SCORE_ID}`).text('0');
-    $(`#${WINNER_RESULT_ID}`).text('');
-    $(`#${WINNER_PIC_ID}`).hide();
-    $(`#${LOSER_PIC_ID}`).hide();
-  }
-
-  var newGame = function() {
-    resetHands();
-    clearBoard();
-    removePlayerButtonEvents();
-    setPlayerButtonEvents();
-    dealCard(PLAYER_ID);
-    dealCard(DEALER_ID, true);
-    dealCard(PLAYER_ID);
-    dealCard(DEALER_ID);
-
-    if (dealerHand.hasBlackJack()) {
-      endPlayerTurn();
-      endGame();
-    }
-    //check for blackjack!!
-//    currentPlayer = PLAYER_ID;
-  }
-
   var completeDealerHand = function() {
     var dealerScore = dealerHand.totalPoints();
     while (dealerScore < 17) {
@@ -336,38 +345,55 @@ $(document).ready(function() {
   }
 
   var removeDealerWins = function() {
-    $(`#${LOSER_PIC_ID}`).animateAndRemoveCss('bounceOut');
+    $loserPic.animateAndRemoveCss('bounceOut');
   //  $(`#${LOSER_PIC_ID}`).hide();
   }
 
   var removePlayerWins = function() {
-    $(`#${WINNER_PIC_ID}`).animateAndRemoveCss('bounceOut');
+    $winnerPic.animateAndRemoveCss('bounceOut');
    // $(`#${WINNER_PIC_ID}`).hide();
   }
 
   var displayDealerWins = function() {
-    $(`#${WINNER_RESULT_ID}`).text("Dealer wins!");
-    $(`#${LOSER_PIC_ID}`).show().animateCss('zoomIn');
+    $winnerResult.text("Dealer wins!");
+    $loserPic.show().animateCss('zoomIn');
     window.setTimeout(removeDealerWins, END_ANIMATION_TIME);
   }
 
   var displayPlayerWins = function() {
-    $(`#${WINNER_RESULT_ID}`).text("Player wins!");
-    $(`#${WINNER_PIC_ID}`).show().animateCss('zoomIn');
+    $winnerResult.text("Player wins!");
+    $winnerPic.show().animateCss('zoomIn');
     window.setTimeout(removePlayerWins, END_ANIMATION_TIME);
 
   }
 
+  var displayDealerStats = function() {
+    $numDealerWins.html(numDealerWins);
+  }
+
+  var displayPlayerStats = function() {
+    console.log("player Cash = ", playerCash);
+    $playerCash.html(playerCash);
+    $playerNumWins.html(playerNumWins);
+  }
+
   var endGame = function() {
     var winner = pickWinner();
-    $(`#${DEALER_SCORE_ID}`).text(dealerHand.totalPoints());
-    $(`#${WINNER_RESULT_ID}`).text(winner);
+    console.log("In endGame!. winner = ", winner);
+    console.log("currentBet = ", currentBet);
+    $dealerScore.text(dealerHand.totalPoints());
+    $winnerResult.text(winner);
     if (winner === DEALER_ID) {
+      dealerNumWins++;
+      playerCash -= currentBet;
       displayDealerWins();
     }
     else {
+      playerNumWins++;
+      playerCash += currentBet;
       displayPlayerWins();
     }
+    displayPlayerStats();
   }
 
   var playDealer = function() {
@@ -378,26 +404,165 @@ $(document).ready(function() {
   }
 
   var removePlayerButtonEvents = function() {
-    $('#hit').off('click', dealPlayerCard);
-    $('#stand').off('click', playDealer);
-    $('#peek').off('click', peekAtHoleCard);
+    $hitButton.off('click', dealPlayerCard);
+    $standButton.off('click', playDealer);
+    $peekButton.off('click', peekAtHoleCard);
+//    $newHandButton.off('click', newHand);
   }
 
   var setPlayerButtonEvents = function() {
-    $('#hit').on('click', dealPlayerCard);
-    $('#stand').on('click', playDealer);
-    $('#peek').on('click', peekAtHoleCard);
+    $hitButton.on('click', dealPlayerCard);
+    $standButton.on('click', playDealer);
+    $peekButton.on('click', peekAtHoleCard);
+//    $newHandButton.on('click', newHand);
   }
 
-  var initGame = function() {
+  var resetPlayerButtenEvents = function() {
+    removePlayerButtonEvents();
+    setPlayerButtonEvents();
+  }
+
+  var resetHands = function() {
+    dealerHand = new Hand(DEALER_ID);
+    playerHand = new Hand(PLAYER_ID);
+  }
+
+  var clearBoard = function() {
+    $('.cards img').remove();
+    $playerScore.text('0');
+    $dealerScore.text('0');
+    $winnerResult.text('');
+    $winnerPic.hide();
+    $loserPic.hide();
+  }
+
+  var showPlayerCash = function() {
+    $playerCash.html(playerCash);
+  }
+
+  var showPlayerWins = function() {
+    $playerNumWins.html(playerNumWins);
+  }
+
+  var showErrorMessage = function(error) {
+    $errorText.html(error);
+    $errorDiv.show();
+  }
+
+  var hideErrorMessage = function(error) {
+    $errorText.html("");
+    $errorDiv.hide();
+  }
+
+  var betValid = function(bet) {
+    var betValue = parseInt(bet);
+    var error;
+    if (typeof betValue !== "number") {
+      error = "Bet must be a number";
+    } else if (betValue >  MAX_BET) {
+      error = `Bet cannot be greater than ${MAX_BET}`;
+    } else if (betValue > playerCash) {
+      error = "You don't have that much cash to bet!";
+    } else if (betValue === 0) {
+      error = "You must bet more than 0!";
+    }
+
+    console.log("in betValid. error = ", error);
+    return (error ? error : true);
+  }
+
+  var newHand = function() {
+    console.log("In New Hand!!");
+    var bet = $currentBet.val();
+    console.log("current bet = ", bet);
+    var betStatus;
+    var betInt;
+    if (bet) {
+      betInt =  parseInt(bet);
+      betStatus = betValid(betInt);
+    } else {
+      console.log("Did not place a bet");
+      showErrorMessage("You must place a bet!");
+      return;
+    }
+
+    console.log("betStatus = ", betStatus);
+
+    if (betStatus === true) {
+      console.log("Dealing hands");
+      currentBet = betInt;
+      resetHands();
+      clearBoard();
+      removePlayerButtonEvents();
+      setPlayerButtonEvents();
+      dealCard(PLAYER_ID);
+      dealCard(DEALER_ID, true);
+      dealCard(PLAYER_ID);
+      dealCard(DEALER_ID);
+
+      if (dealerHand.hasBlackJack()) {
+        endPlayerTurn();
+        endGame();
+      }
+    }
+    else {
+      console.log("BAD BET: ", betStatus);
+      showErrorMessage(betStatus);
+    }
+    //check for blackjack!!
+//    currentPlayer = PLAYER_ID;
+  }
+
+  var startFirstHand = function() {
+    $newHandButton.html("New Hand");
+    $newHandButton.off('click', newHand);
+    $newHandButton.on('click', newHand);
+    newHand();
+  }
+
+  var initStartGameButton = function() {
+    $newHandButton.html("Start Game!");
+    $currentBet.val(DEFAULT_BET);
+    $newHandButton.animateCss('bounceIn');
+    $newHandButton.off('click', startFirstHand);
+    $newHandButton.on('click', startFirstHand);
+    showPlayerCash();
+    showPlayerWins();
+  }
+
+  var newGame = function() {
+    playerCash = STARTING_CASH;
+    dealerNumWins = 0;
+    playerNumWins = 0;
     resetHands();
-    //console.log("playerHand = ", playerHand);
     populateShoe(NUM_DECKS_IN_SHOE);
+    initStartGameButton();
   }
 
-  initGame();
+  var showHelp = function() {
+   // console.log("Clicked help button")
+    $helpText.show();
+  }
+  var hideHelp = function() {
+    $helpText.hide();
+  }
+  var hideError = function() {
+    $errorButton.hide();
+  }
 
-  $('#new-game').on('click', newGame);
+  // var initGame = function() {
+  //   resetHands();
+  //   //console.log("playerHand = ", playerHand);
+  //   populateShoe(NUM_DECKS_IN_SHOE);
+  // }
+
+  newGame();
+
+  $helpButton.on('click', showHelp);
+  $closeHelp.on('click',  hideHelp);
+  $closeError.on('click',  hideErrorMessage);
+
+  $(`#${NEW_GAME_BUTTON_ID}`).on('click', newGame);
 
  //shoe = buildCardDeck();
 // card1 = deck[0];
