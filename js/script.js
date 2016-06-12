@@ -290,7 +290,7 @@ $(document).ready(function() {
   }
 
   var hideHoleCard = function() {
-    console.log("in hideHoleCard. cssId =", currentHoleCard.cssId);
+    //console.log("in hideHoleCard. cssId =", currentHoleCard.cssId);
     $(`#${currentHoleCard.cssId}`).attr('src', CARD_BACK_PIC).addClass('animated flipInY');
   }
 
@@ -328,6 +328,8 @@ $(document).ready(function() {
         winner = DEALER_ID;
       } else if (!dealerHasBlackJack && playerHasBlackJack) {
         winner = PLAYER_ID;
+      } else {
+        //push. TODO implement push
       }
     }
 
@@ -339,12 +341,6 @@ $(document).ready(function() {
     return winner;
   }
 
-  var endPlayerTurn = function() {
-    console.log("END PLAYER TURN")
-    currentHoleCard.showCard();
-    $peekButton.hide();
-    removePlayerButtonEvents();
-  }
 
   var removeDealerWins = function() {
     $loserPic.animateAndRemoveCss('bounceOut');
@@ -378,6 +374,13 @@ $(document).ready(function() {
     $playerCash.html(playerCash);
     $playerNumWins.html(playerNumWins);
     $dealerNumWins.html(dealerNumWins);
+  }
+
+  var endPlayerTurn = function() {
+    console.log("END PLAYER TURN")
+    currentHoleCard.showCard();
+    $peekButton.hide();
+    removePlayerButtonEvents();
   }
 
   var endGame = function() {
@@ -503,7 +506,7 @@ $(document).ready(function() {
       dealCard(PLAYER_ID);
       dealCard(DEALER_ID);
 
-      if (dealerHand.hasBlackJack()) {
+      if (dealerHand.hasBlackJack() || playerHand.hasBlackJack()) {
         endPlayerTurn();
         endGame();
       }
