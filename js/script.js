@@ -203,6 +203,7 @@ $(document).ready(function() {
     var score;
     if (this.scoreDisplayState === HIDE) {
       score = HIDDEN_SCORE;
+      $peekButton.show();
     } else {  
       score = this.totalPoints(); 
     }
@@ -341,6 +342,7 @@ $(document).ready(function() {
   var endPlayerTurn = function() {
     console.log("END PLAYER TURN")
     currentHoleCard.showCard();
+    $peekButton.hide();
     removePlayerButtonEvents();
   }
 
@@ -535,6 +537,7 @@ $(document).ready(function() {
     dealerNumWins = 0;
     playerNumWins = 0;
     resetHands();
+    clearBoard();
     populateShoe(NUM_DECKS_IN_SHOE);
     initStartGameButton();
   }

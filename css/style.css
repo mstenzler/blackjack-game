@@ -72,6 +72,10 @@ html {
   margin: -137px -250px;
 }
 
+img#peek {
+  margin: 0;
+  display: none;
+}
 /*
 div#bet-and-play {
   position: inline-block;
