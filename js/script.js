@@ -116,7 +116,7 @@ $(document).ready(function() {
 */
 
   Card.prototype.getPoints = function() {
-    if (['jack', 'king', 'queen'].includes(this.stringValue)) {
+    if (arrayIncludes(['jack', 'king', 'queen'], this.stringValue)) {
       return 10;
     } else if (this.stringValue === 'ace') {
       return 'ace';
@@ -221,6 +221,17 @@ $(document).ready(function() {
     }
   } 
 
+  //The includes function is new and not supported by many browsers, so
+  //writing my own
+  var arrayIncludes = function(arr, target) {
+    for (var i=0; i<arr.length; i++) {
+      if (arr[i] === target) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   var randomNumber = function(length) {
     return Math.floor(Math.random()*length);
   }
@@ -247,16 +258,6 @@ $(document).ready(function() {
     shuffle(shoe);
   }
 
-/*
-  var getRandomCardFromShoe = function() {
-    var rand = Math.floor(Math.random()*shoe.length);
-    var card = shoe[rand];
-    console.log('in getRandom. crad = ', card);
-    //remove the card from the shoe
-    shoe.splice(rand, 1);
-    return card;
-  }
-*/
   var dealCard = function(player, isHoleCard) {
     if (!shoe.length) {
       populateShoe(NUM_DECKS_IN_SHOE);
