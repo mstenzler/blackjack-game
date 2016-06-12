@@ -130,7 +130,7 @@ $(document).ready(function() {
     this.cards = [];
     this.scoreId = (player === DEALER_ID ? DEALER_SCORE_ID : PLAYER_SCORE_ID);
     this.scoreDisplayState = (player === DEALER_ID ? HIDE : SHOW);
-    console.log("cards = ", this.cards);
+    //console.log("cards = ", this.cards);
   }
 
   Hand.prototype.addCard = function(card) {
@@ -203,7 +203,7 @@ $(document).ready(function() {
     var score;
     if (this.scoreDisplayState === HIDE) {
       score = HIDDEN_SCORE;
-      console.log("SHOWING PEEK BUTTON for player: ", this.player);
+     // console.log("SHOWING PEEK BUTTON for player: ", this.player);
       $peekButton.show();
     } else {  
       score = this.totalPoints(); 
@@ -243,7 +243,7 @@ $(document).ready(function() {
       deck = buildCardDeck();
       shoe = shoe.concat(deck); 
     }
-    console.log("shoe length = ", shoe.length);
+   // console.log("shoe length = ", shoe.length);
     shuffle(shoe);
   }
 
@@ -371,14 +371,14 @@ $(document).ready(function() {
   }
 
   var displayStats = function() {
-    console.log("player Cash = ", playerCash);
+    //console.log("player Cash = ", playerCash);
     $playerCash.html(playerCash);
     $playerNumWins.html(playerNumWins);
     $dealerNumWins.html(dealerNumWins);
   }
 
   var endPlayerTurn = function() {
-    console.log("END PLAYER TURN")
+    //console.log("END PLAYER TURN")
     currentHoleCard.showCard();
     $peekButton.hide();
     removePlayerButtonEvents();
@@ -386,8 +386,8 @@ $(document).ready(function() {
 
   var endGame = function() {
     var winner = pickWinner();
-    console.log("In endGame!. winner = ", winner);
-    console.log("currentBet = ", currentBet);
+    //console.log("In endGame!. winner = ", winner);
+    //console.log("currentBet = ", currentBet);
     $dealerScore.text(dealerHand.totalPoints());
     $winnerResult.text(winner);
     if (winner === DEALER_ID) {
@@ -431,13 +431,13 @@ $(document).ready(function() {
   }
 
   var disableNewHandButton = function() {
-    console.log("DISABLING NewHandButton!!");
+    //console.log("DISABLING NewHandButton!!");
     $newHandButton.off('click', newHand);
     $newHandButton.removeClass('play-hand').addClass('disabled');
   }
 
   var enableNewHandButton = function() {
-    console.log("ENABLING NewHandButton!!")
+    //console.log("ENABLING NewHandButton!!")
     $newHandButton.on('click', newHand);
     $newHandButton.removeClass('disabled').addClass('play-hand');
   }
@@ -493,29 +493,29 @@ $(document).ready(function() {
       error = "You must bet more than 0!";
     }
 
-    console.log("in betValid. error = ", error);
+    //console.log("in betValid. error = ", error);
     return (error ? error : true);
   }
 
   var newHand = function() {
-    console.log("In New Hand!!");
+    //console.log("In New Hand!!");
     var bet = $currentBet.val();
-    console.log("current bet = ", bet);
+    //console.log("current bet = ", bet);
     var betStatus;
     var betInt;
     if (bet) {
       betInt =  parseInt(bet);
       betStatus = betValid(betInt);
     } else {
-      console.log("Did not place a bet");
+      //console.log("Did not place a bet");
       showErrorMessage("You must place a bet!");
       return;
     }
 
-    console.log("betStatus = ", betStatus);
+    //console.log("betStatus = ", betStatus);
 
     if (betStatus === true) {
-      console.log("Dealing hands");
+      //console.log("Dealing hands");
       disableNewHandButton();
       currentBet = betInt;
       resetHands();
@@ -533,7 +533,7 @@ $(document).ready(function() {
       }
     }
     else {
-      console.log("BAD BET: ", betStatus);
+      //console.log("BAD BET: ", betStatus);
       showErrorMessage(betStatus);
     }
     //check for blackjack!!
@@ -541,7 +541,7 @@ $(document).ready(function() {
   }
 
   var startFirstHand = function() {
-    console.log("IN startFirstHand!!")
+    //console.log("IN startFirstHand!!")
     $newHandButton.html("New Hand");
 //    $newHandButton.off('click', newHand);
 //    $newHandButton.on('click', newHand);
